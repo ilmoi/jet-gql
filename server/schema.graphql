@@ -1,0 +1,91 @@
+# https://walmartlabs.github.io/json-to-simple-graphql-schema/
+
+# ---------------------------------------- from idl direct
+
+#todo ok just pasting in the IDL into the link above doesn't work.
+# you need to do a bit of wrangling to get it into the right format
+# readState() in jet/parser does that
+# you can then export the json from mongo and paste into link above and it works!
+
+#type Errors { code: Int name: String msg: String }
+#
+#type Fields { name: String type: String index: Boolean }
+#
+#type Events { name: String fields: [Fields ] }
+#
+#type Type { kind: String fields: [Fields ] }
+#
+#type Types { name: String type: Type }
+#
+#type Args { name: String type: String }
+#
+#type Accounts { name: String isMut: Boolean isSigner: Boolean }
+#
+#type Instructions { name: String args: [Args ] accounts: [Accounts ] }
+#
+#type IDL {
+#  version: String
+#  name: String
+#  errors: [Errors ]
+#  events: [Events ]
+#  types: [Types ]
+#  accounts: [Accounts ]
+#  instructions: [Instructions ]
+#}
+
+# ---------------------------------------- a bit of wrangling
+
+type UpdatedAt { date: String }
+
+type CreatedAt { date: String }
+
+type Config { utilizationRate1: Int
+  utilizationRate2: Int
+  borrowRate0: Int
+  borrowRate1: Int
+  borrowRate2: Int
+  borrowRate3: Int
+  minCollateralRatio: Int
+  liquidationPremium: Int
+  manageFeeCollectionThreshold: String
+  manageFeeRate: Int
+  loanOriginationFee: Int
+  liquidationSlippage: Int
+  reserved0: Int
+  liquidationDexTradeMax: String
+  reserved1: [Int ] }
+
+type Fields { version: Int
+  index: Int
+  exponent: Int
+  market: String
+  pythOraclePrice: String
+  pythOracleProduct: String
+  tokenMint: String
+  depositNoteMint: String
+  loanNoteMint: String
+  vault: String
+  feeNoteVault: String
+  dexSwapTokens: String
+  dexOpenOrders: String
+  dexMarket: String
+  state: [Int ]
+  reserved1: [Int ]
+  config: Config
+  reserved0: [Int ] }
+
+type Id { oid: String }
+
+type Reserve { name: String
+#  __v: Int #conflicts with node's own implementation
+  updatedAt: UpdatedAt
+  createdAt: CreatedAt
+  fields: Fields
+  _id: Id }
+
+# ---------------------------------------- bringing it together
+
+type Query {
+    info: String!
+    reserves: [Reserve ]
+}
